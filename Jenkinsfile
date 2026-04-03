@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_IMAGE = "jenithdt/spring_project:${BUILD_NUMBER}"
+    }
+
     parameters {
         choice(
             name: 'ACTION',
@@ -22,7 +26,10 @@ pipeline {
         stage('Build Docker Image') {
             when { expression { params.ACTION == 'build' } }
             steps {
-                sh 'docker build -t jenithdt/spring_project:v1 .'
+                 sh '''
+                docker build -t $DOCKER_IMAGE .
+                docker tag $DOCKER_IMAGE jenithdt/static-webpage:latest
+                '''
             }
         }
 
@@ -42,12 +49,15 @@ pipeline {
         stage('Docker Push') {
             when { expression { params.ACTION == 'build' } }
             steps {
-                sh 'docker push jenithdt/spring_project:v1'
+                sh '''
+                docker push $DOCKER_IMAGE
+                docker push jenithdt/static-webpage:latest
+                '''
             }
         }
 
         stage('Deploy Application') {
-            when { expression { params.ACTION == 'deploy' } }
+            when { expression { params.ACTION == 'build' } }
             steps {
                 sh '''
                 docker-compose down || true
