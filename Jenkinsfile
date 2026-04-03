@@ -30,7 +30,7 @@ pipeline {
             when { expression { params.ACTION == 'build' } }
             steps {
                 withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-3153',
+                    credentialsId: 'dockerhub-2008',
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
