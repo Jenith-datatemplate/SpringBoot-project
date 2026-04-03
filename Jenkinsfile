@@ -14,7 +14,7 @@ pipeline {
         stage('Checkout Code') {
             when { expression { params.ACTION == 'build' } }
             steps {
-                git url: 'https://github.com/JenithJS/SpringBoot_using_Jenkins.git',
+                git url: 'https://github.com/Jenith-datatemplate/SpringBoot-project.git',
                     branch: 'master'
             }
         }
@@ -22,7 +22,7 @@ pipeline {
         stage('Build Docker Image') {
             when { expression { params.ACTION == 'build' } }
             steps {
-                sh 'docker build -t jenithjs/spring_project2003:v1 .'
+                sh 'docker build -t jenithdt/spring_project:v1 .'
             }
         }
 
@@ -42,7 +42,7 @@ pipeline {
         stage('Docker Push') {
             when { expression { params.ACTION == 'build' } }
             steps {
-                sh 'docker push jenithjs/spring_project2003:v1'
+                sh 'docker push jenithdt/spring_project:v1'
             }
         }
 
