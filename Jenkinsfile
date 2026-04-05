@@ -8,7 +8,7 @@ pipeline {
     parameters {
         choice(
             name: 'ACTION',
-            choices: ['build', 'deploy', 'remove'],
+            choices: ['build & deploy', 'remove'],
             description: 'Select what you want to do'
         )
     }
@@ -16,7 +16,7 @@ pipeline {
     stages {
 
         stage('Checkout Code') {
-            when { expression { params.ACTION == 'build' } }
+            when { expression { params.ACTION == 'build & deploy' } }
             steps {
                 git url: 'https://github.com/Jenith-datatemplate/SpringBoot-project.git',
                     branch: 'master'
@@ -24,17 +24,17 @@ pipeline {
         }
 
         stage('Build Docker Image') {
-            when { expression { params.ACTION == 'build' } }
+            when { expression { params.ACTION == 'build & deploy' } }
             steps {
                  sh '''
                 docker build -t $DOCKER_IMAGE .
-                docker tag $DOCKER_IMAGE jenithdt/static-webpage:latest
+                docker tag $DOCKER_IMAGE jenithdt/spring_project:latest
                 '''
             }
         }
 
         stage('Docker Login') {
-            when { expression { params.ACTION == 'build' } }
+            when { expression { params.ACTION == 'build & deploy' } }
             steps {
                 withCredentials([usernamePassword(
                     credentialsId: 'dockerhub-2008',
@@ -47,17 +47,17 @@ pipeline {
         }
 
         stage('Docker Push') {
-            when { expression { params.ACTION == 'build' } }
+            when { expression { params.ACTION == 'build & deploy' } }
             steps {
                 sh '''
                 docker push $DOCKER_IMAGE
-                docker push jenithdt/static-webpage:latest
+                docker push jenithdt/spring_project:latest
                 '''
             }
         }
 
         stage('Deploy Application') {
-            when { expression { params.ACTION == 'build' } }
+            when { expression { params.ACTION == 'build & deploy' } }
             steps {
                 sh '''
                 docker-compose down || true
