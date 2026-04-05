@@ -19,7 +19,7 @@ services:
       retries: 5
 
   app:
-    image: jenithdt/spring_project:v1
+    image: jenithdt/spring_project:latest
     container_name: springboot-app
     depends_on:
       db:
